@@ -1,61 +1,56 @@
-// 
-const game = document.getElementById('game'),
-      guessInput = document.getElementById('guess-input'),
-      guessValue = document.getElementById('guess-value'),
-      minNum = document.querySelector('.min-num'),
-      maxNum = document.querySelector('.max-num')
-      message = document.querySelector('.message');
+//elements 
+const game = document.getElementById('game');
+const guessInput = document.getElementById('guess-input');
+const guessValue = document.getElementById('guess-value');
+const minNum = document.querySelector('.min-num');
+const maxNum = document.querySelector('.max-num');
+const message = document.querySelector('.message');
 
 //variables 
+
 let min = 0;
 let max = 10;
 let guessLeft = 3;
-let numWin = Math.floor(((Math.random()*max)+min)-min);
+let win = Math.floor(((Math.random()*max)+min)-min)
 
-//add event listenner 
-guessValue.addEventListener('click',guesFunc);
+//
+minNum.innerHTML = min;
+maxNum.innerHTML = max;
+console.log(win)
+
+//add event
+guessValue.addEventListener('click', playGame);
 game.addEventListener('mousedown',playAgain);
+//playGame function 
+function playGame(e){
 
- //set the value 
- minNum.innerHTML = `${min}`;
- maxNum.innerHTML = `${max}`;
-
-//function guess
-function guesFunc(e){
-
-   if(guessInput.value == ''){
-       alert('could you please enter a number ');
-   }else if(guessInput.value < min || guessInput.value > max){
-
-        message.innerHTML = `Please Enter Number Between ${min} and ${max}`;
-        msgColor('red')
-
-   }else if(guessInput.value ==  numWin){
-        // game over you win 
-        message.innerHTML = `${guessInput.value} is correct, YOU WIN!`;
-            guessValue.value ='Play Again';
-            guessValue.className += 'play-again';
-        msgColor('green')
-   }else if(guessInput.value !==  numWin){
-console.log(numWin)
-        guessLeft--
-        // game over lost enter a number 
-        message.innerHTML = `${guessInput.value}  is not correct, ${guessLeft} guesses left`;
-
+    if(guessInput.value == '' || guessInput.value == NaN){
+        //enter a valid number
+        msgColor('red','could you please enter a value')
+    }else if(guessInput.value < min || guessInput.value > max){
+        //enter a number betwen min and max
+        msgColor('red',`could you please enter a number between ${min} and ${max} `)
+    }else if(guessInput.value == win){
+        //you win
+        guessValue.className += 'play-again';
+        guessValue.value = 'play Again';
+        msgColor('green',`${win} is correct! you win`);
+    }else if(guessInput.value !== win){
+        guessLeft--;
+        //try again 
+        msgColor('red',`wrong number you steel have ${guessLeft} guesses`)
         if(guessLeft == 0){
-            message.innerHTML = `GAME OVER you lost, ${numWin} is the Correct Number`;
-            guessInput.disabled = true;
-            
-            guessValue.value ='Play Again';
+            //you lost
+            guessValue.value = 'play Again';
             guessValue.className += 'play-again';
-
+            msgColor('red',`Game Over the corect numbre was ${win}`);
+            guessInput.disabled = true;
         }
-            msgColor('red'); 
     }
     e.preventDefault();
 }
 
-// funciton playAgain
+//function play Again
 function playAgain(e){
 
     if(e.target.className === 'play-again'){
@@ -63,17 +58,17 @@ function playAgain(e){
     }
 }
 
-//funciton color
-function msgColor(color){
-
+//function message color
+function msgColor(color, msg){
     if(color == 'red'){
-        message.style.color = 'red';
-        guessInput.style.borderColor = 'red';
+        message.innerHTML = msg;
+        message.style.color = color;
+        guessInput.style.borderColor = color;
         guessInput.value = '';
     }else if(color == 'green'){
-        message.style.color = 'green';
-        guessInput.style.borderColor = 'green';
+        message.innerHTML = msg;
+        message.style.color = color;
+        guessInput.style.borderColor = color;
         guessInput.disabled = true;
     }
-
 }
